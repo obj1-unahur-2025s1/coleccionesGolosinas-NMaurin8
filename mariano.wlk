@@ -2,12 +2,17 @@ import golosinas.*
 
 object mariano{
     const property golosinas = []
-
+    const sabores = #{frutilla, chocolate, naranja, vainilla, melon}
+    const desechadas = #{}
     method comprar(unaGolosina){
         golosinas.add(unaGolosina)
     }
     method desechar(unaGolosina){
+        if(not golosinas.contains(unaGolosina)){
+            self.error("La golosina no se encuentra.")
+        }
         golosinas.remove(unaGolosina)
+        desechadas.add(unaGolosina)
     }
     method cantidadDeGolosinas() = golosinas.size()
 
@@ -33,5 +38,16 @@ object mariano{
     method golosinasFaltantes(golosinasDeseadas) = golosinasDeseadas.filter({golosina => !golosinas.contains(golosina)})
 
     method gustosFaltantes(gustosDeseados) = gustosDeseados.filter({gusto => !self.sabores().contains(gusto)})
+
+    method gastoEn(sabor) = self.golosinasDeSabor(sabor).sum({golosina => golosina.precio()})
+
+    method cantidadGolosinas(unSabor) = golosinas.count({golosina => golosina.sabor() == unSabor})
+    method saborMasPopular() = sabores.max({sabor => self.cantidadGolosinas(sabor)})
+
+    method saborConMayorPeso(unSabor) = self.golosinasDeSabor(unSabor).max({golosina => golosina.peso()})
+    
+    method saborMasPesado() = golosinas.max({golosina => self.saborConMayorPeso(golosina.sabor()).peso()})
+
+    method comproYDesecho(unaGolosina) = desechadas.contains(unaGolosina)
 }
 

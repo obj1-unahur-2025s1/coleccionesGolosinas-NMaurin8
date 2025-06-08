@@ -20,6 +20,7 @@ object naranja{
   method siguienteSabor() = frutilla
 }
 object vainilla{}
+object melon{}
 
 class Bombon inherits Golosina(precio = 5, sabor = frutilla, peso = 15, libreDeGluten = true){
 
@@ -64,18 +65,28 @@ class Chocolatin inherits Golosina( precio = 0.50 * peso, sabor = chocolate, lib
   }
 }
 
-class GolosinaBaniada inherits Golosina(peso = golosinaDeBase.peso() + pesoBaniado, precio = golosinaDeBase.precio() + 2, 
-sabor = golosinaDeBase.sabor(), libreDeGluten = golosinaDeBase.libreDeGluten()){
-  const golosinaDeBase
-  var cantidadDeMordiscos = 0
+class GolosinaBaniada inherits Golosina(precio = 0, peso = 0, sabor = frutilla, libreDeGluten = true) {
+  var property golosinaDeBase
   var pesoBaniado = 4
+  var cantidadDeMordiscos = 0
 
-  override method mordisco(){
+  method initialize(unaGolosina) {
+    golosinaDeBase = unaGolosina
+  }
+
+  override method peso() = golosinaDeBase.peso() + pesoBaniado
+  override method precio() = golosinaDeBase.precio() + 2
+  override method sabor() = golosinaDeBase.sabor()
+  override method libreDeGluten() = golosinaDeBase.libreDeGluten()
+
+  override method mordisco() {
     golosinaDeBase.mordisco()
     cantidadDeMordiscos += 1
-    pesoBaniado = 0.max(pesoBaniado - if(cantidadDeMordiscos <= 2) 2 else 0  )
+    pesoBaniado = 0.max(pesoBaniado - if(cantidadDeMordiscos <= 2) 2 else 0)
   }
 }
+
+
 
 class Tutti inherits Golosina(peso = 5, sabor = frutilla, precio = if(libreDeGluten) 7 else 10){
   override method precio() = if(libreDeGluten) 7 else 10

@@ -1,0 +1,194 @@
+import mariano.*
+import golosinas.*
+describe "Golosinas"{
+  test "Bombon coincide con enunciado"{
+    const bombon = new Bombon() 
+    assert.equals(5, bombon.precio())
+    assert.equals(15, bombon.peso())
+    assert.equals(frutilla, bombon.sabor())
+    assert.that(bombon.libreDeGluten())
+
+    bombon.mordisco()
+    assert.equals(11, bombon.peso())
+  }
+
+  test "Alfajor coincide con enunciado"{
+    const alfajor = new Alfajor()
+    assert.equals(12, alfajor.precio())
+    assert.equals(300, alfajor.peso())
+    assert.equals(chocolate, alfajor.sabor())
+    assert.notThat(alfajor.libreDeGluten())
+
+    alfajor.mordisco()
+    assert.equals(240, alfajor.peso())
+  }
+
+  test "Caramelo coincide con enunciado"{
+    const caramelo = new Caramelo()
+    assert.equals(1, caramelo.precio())
+    assert.equals(5, caramelo.peso())
+    assert.equals(frutilla, caramelo.sabor())
+    assert.that(caramelo.libreDeGluten())
+
+    caramelo.mordisco()
+    assert.equals(4, caramelo.peso())
+  }
+
+  test "Chupetin coincide con enunciado"{
+    const chupetin = new Chupetin()
+    assert.equals(2, chupetin.precio())
+    assert.equals(7, chupetin.peso())
+    assert.equals(naranja, chupetin.sabor())
+    assert.that(chupetin.libreDeGluten())
+
+    chupetin.mordisco()
+    assert.equals(6.3, chupetin.peso())
+  }
+
+  test "Oblea coincide con enunciado"{
+    const oblea = new Oblea()
+    assert.equals(5, oblea.precio())
+    assert.equals(250, oblea.peso())
+    assert.equals(vainilla, oblea.sabor())
+    assert.notThat(oblea.libreDeGluten())
+
+    oblea.mordisco()
+    oblea.mordisco()
+    oblea.mordisco()
+    assert.equals(46.875, oblea.peso())
+  }
+
+  test "Chocolatin coincide con enunciado"{
+    const chocolatin = new Chocolatin(peso = 40)
+    assert.equals(40, chocolatin.peso())
+    assert.equals(20, chocolatin.precio())
+    assert.equals(chocolate, chocolatin.sabor())
+    assert.notThat(chocolatin.libreDeGluten())
+
+    chocolatin.mordisco()
+    chocolatin.mordisco()
+    assert.equals(36, chocolatin.peso())
+
+    const chocolatin2 = new Chocolatin(peso = 100)
+    assert.equals(100, chocolatin2.peso())
+    assert.equals(50, chocolatin2.precio())
+    assert.equals(chocolate, chocolatin2.sabor())
+    assert.notThat(chocolatin2.libreDeGluten())
+
+    chocolatin2.mordisco()
+    chocolatin2.mordisco()
+    assert.equals(96, chocolatin2.peso())
+
+  }
+
+  test "TuttiFrutti coincide con enunciado"{
+    const tutti = new Tutti(libreDeGluten = true)
+    assert.equals(5, tutti.peso())
+    assert.equals(7, tutti.precio())
+
+    assert.equals(frutilla, tutti.sabor())
+    tutti.mordisco()
+    assert.equals(chocolate, tutti.sabor())
+    tutti.mordisco()
+    assert.equals(naranja, tutti.sabor())
+
+    tutti.mordisco()
+    assert.that(tutti.libreDeGluten())
+
+    tutti.libreDeGluten(false)
+    assert.equals(10, tutti.precio())
+  }
+
+  test "Se baña tutti frutti y coincide con el enunciado"{
+    const tutti = new Tutti(libreDeGluten = true)
+    const tuttiBaniado = new GolosinaBaniada(golosinaDeBase = tutti )
+    
+    assert.equals(9, tuttiBaniado.peso())
+    assert.equals(9, tuttiBaniado.precio())
+
+    assert.equals(frutilla, tuttiBaniado.sabor())
+    tuttiBaniado.mordisco()
+    assert.equals(chocolate, tuttiBaniado.sabor())
+    tuttiBaniado.mordisco()
+    assert.equals(naranja, tuttiBaniado.sabor())
+
+    tuttiBaniado.mordisco()
+    assert.that(tuttiBaniado.libreDeGluten())
+
+    tuttiBaniado.libreDeGluten(false)
+    assert.equals(9, tuttiBaniado.precio())
+  }
+}
+
+describe "Golosinas bañadas" {
+
+    const tutti = new Tutti(libreDeGluten = true)
+    const chocolatito = new Chocolatin(peso = 10)
+    const chupetin = new Chupetin()
+
+    const bañadaTutti = new GolosinaBaniada(golosinaDeBase = tutti)
+    const bañadaChoco = new GolosinaBaniada(golosinaDeBase = chocolatito)
+    const bañadaChupe = new GolosinaBaniada(golosinaDeBase = chupetin)
+
+    test "Sabor inicial es el de la golosina base" {
+        assert.equals(frutilla, bañadaTutti.sabor())
+        assert.equals(chocolate, bañadaChoco.sabor())
+        assert.equals(naranja, bañadaChupe.sabor())
+    }
+
+    test "Precio es el de la base + 2" {
+        assert.equals(tutti.precio() + 2, bañadaTutti.precio())
+        assert.equals(chocolatito.precio() + 2, bañadaChoco.precio())
+        assert.equals(chupetin.precio() + 2, bañadaChupe.precio())
+    }
+
+    test "Peso es el de la base + 4" {
+        assert.equals(tutti.peso() + 4, bañadaTutti.peso())
+        assert.equals(chocolatito.peso() + 4, bañadaChoco.peso())
+        assert.equals(chupetin.peso() + 4, bañadaChupe.peso())
+    }
+
+    test "libreDeGluten se respeta según la base" {
+        assert.equals(true, bañadaTutti.libreDeGluten())
+        assert.equals(false, bañadaChoco.libreDeGluten())
+        assert.equals(true, bañadaChupe.libreDeGluten())
+    }
+
+    test "mordisco afecta tanto a la base como al baño" {
+        const pesoInicial = bañadaChupe.peso()
+        bañadaChupe.mordisco()
+        assert.that(bañadaChupe.peso() < pesoInicial)
+        assert.equals(2, bañadaChupe.peso() - chupetin.peso())  
+    }
+
+    test "mordiscos adicionales consumen el baño hasta 0" {
+        bañadaChoco.mordisco()  
+        bañadaChoco.mordisco()  
+        assert.equals(0, bañadaChoco.peso() - chocolatito.peso())  
+        bañadaChoco.mordisco()  
+        assert.equals(0, bañadaChoco.peso() - chocolatito.peso())
+    }
+
+}
+
+describe "Tests mariano"{
+  const alfajor = new Alfajor()
+  const bombon = new Bombon() 
+  const chocolatin = new Chocolatin(peso = 40)
+  const chupetin = new Chupetin()
+
+  method initialize(){
+    mariano.comprar(new Chocolatin(peso = 40))
+    mariano.comprar(new Caramelo())
+    mariano.comprar(new Bombon())
+  }
+  test "Las golosinas faltantes son: alfajor y chupetin"{
+    assert.that(mariano.golosinasFaltantes(#{alfajor, bombon, chocolatin, chupetin}).contains(alfajor))
+    assert.that(mariano.golosinasFaltantes(#{alfajor, bombon, chocolatin, chupetin}).contains(chupetin))
+  }
+
+  test "Los sabores faltantes son: vainilla y melon"{
+    assert.that(mariano.gustosFaltantes(#{melon, chocolate, frutilla , vainilla}).contains(melon))
+    assert.that(mariano.gustosFaltantes(#{melon, chocolate, frutilla , vainilla}).contains(vainilla))
+  }
+}
